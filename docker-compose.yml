@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:12.7
+    networks:
+      - my-nw
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: sample
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./sql/create.sql:/docker-entrypoint-initdb.d/create.sql
+
+networks:
+  my-nw:
