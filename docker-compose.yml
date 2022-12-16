@@ -1,6 +1,29 @@
 version: "3.8"
 
 services:
+  spring-render-sample:
+    container_name: spring-render-sample
+    build:
+      context: .
+      dockerfile: src/main/docker/Dockerfile.jvm
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - my-nw
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/sample
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: pass
+    healthcheck:
+      test: "curl http://localhost:8080/actuator/health || exit 1"
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
   postgres:
     container_name: postgres
     image: postgres:12.7
@@ -12,8 +35,28 @@ services:
       POSTGRES_DB: sample
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  sonarqube:
+    image: sonarqube:9.5-community
+    ports:
+      - "9000:9000"
+    networks:
+      - my-nw
     volumes:
-      - ./sql/create.sql:/docker-entrypoint-initdb.d/create.sql
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+
+volumes:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
 
 networks:
   my-nw:

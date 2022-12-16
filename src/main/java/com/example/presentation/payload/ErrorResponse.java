@@ -1,4 +1,4 @@
-package com.example.presentation;
+package com.example.presentation.payload;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

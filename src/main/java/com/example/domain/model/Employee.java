@@ -1,16 +1,28 @@
 package com.example.domain.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
-@Value
-@AllArgsConstructor
+@EqualsAndHashCode
+@Getter
 public class Employee {
 
-    String id;
+  private final EmployeeId id;
 
-    String lastName;
+  private final String firstName;
 
-    String firstName;
+  private final String lastName;
+
+  public Employee(String id, String firstName, String lastName) {
+    this.id = new EmployeeId(id);
+    this.firstName = firstName;
+    this.lastName = lastName;
+  }
+
+  public Employee(EmployeeId id, String firstName, String lastName) {
+    this.id = id;
+    this.firstName = firstName;
+    this.lastName = lastName;
+  }
 
 }

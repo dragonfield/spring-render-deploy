@@ -1,23 +1,26 @@
 package com.example.infrastructure.entity;
 
+import static java.util.Objects.nonNull;
+
 import com.example.domain.model.Employee;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class EmployeeEntity {
+public record EmployeeEntity(
+    String id,
+    String firstName,
+    String lastName
+) {
+  public Employee toModel() {
+    return new Employee(id, firstName, lastName);
+  }
 
-    private String id;
+  public EmployeeEntity merge(Employee employee) {
+    String id = id();
+    String firstName = nonNull(employee.getFirstName()) ? employee.getFirstName() : firstName();
+    String lastName = nonNull(employee.getLastName()) ? employee.getLastName() : lastName();
+    return new EmployeeEntity(id, firstName, lastName);
+  }
 
-    private String lastName;
-
-    private String firstName;
-
-    public Employee toModel() {
-        return new Employee(id, lastName, firstName);
-    }
-
+  public static EmployeeEntity of(Employee employee) {
+    return new EmployeeEntity(employee.getId().getValue(), employee.getFirstName(), employee.getLastName());
+  }
 }
