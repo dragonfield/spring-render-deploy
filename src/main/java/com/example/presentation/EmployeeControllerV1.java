@@ -33,7 +33,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/v1/employees")
+@RequestMapping
 public class EmployeeControllerV1 {
 
   private final FindEmployeeUseCase findEmployeeUseCase;
@@ -44,18 +44,24 @@ public class EmployeeControllerV1 {
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
+  public void handleRoot() {
+    // Do Nothing.
+  }
+
+  @GetMapping("/v1/employees")
+  @ResponseStatus(HttpStatus.OK)
   public ListEmployeesResponse listAllEmployees() {
     return ListEmployeesResponse.of(listAllEmployeesUseCase.handle());
   }
 
-  @GetMapping("/{id}")
+  @GetMapping("/v1/employees/{id}")
   @ResponseStatus(HttpStatus.OK)
   public GetEmployeeResponse getEmployee(@PathVariable String id) {
     Employee employee = findEmployeeUseCase.handle(id);
     return GetEmployeeResponse.of(employee);
   }
 
-  @PostMapping
+  @PostMapping("/v1/employees")
   @ResponseStatus(HttpStatus.CREATED)
   public ResponseEntity<Void> createEmployee(@RequestBody @Validated CreateEmployeeRequest request, BindingResult result) {
     if (result.hasErrors()) {
@@ -77,7 +83,7 @@ public class EmployeeControllerV1 {
     return new ResponseEntity<>(headers, HttpStatus.CREATED);
   }
 
-  @PatchMapping("/{id}")
+  @PatchMapping("/v1/employees/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void updateEmployee(@PathVariable String id,
                              @RequestBody @Validated UpdateEmployeeRequest request,
@@ -92,7 +98,7 @@ public class EmployeeControllerV1 {
     updateEmployeeUseCase.handle(command);
   }
 
-  @DeleteMapping("/{id}")
+  @DeleteMapping("/v1/employees/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteEmployee(@PathVariable String id) {
     deleteEmployeeUseCase.handle(id);

@@ -43,7 +43,7 @@ services:
       start_period: 30s
 
   sonarqube:
-    image: sonarqube:9.5-community
+    image: sonarqube:9.7-community
     ports:
       - "9000:9000"
     networks:
